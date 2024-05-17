@@ -29,7 +29,7 @@ import static net.minecraft.server.command.CommandManager.literal;
 
 public class RStaminaMod implements ModInitializer {
 
-	public static final String rStaminaModVersion = "1.3.1";
+	public static final String rStaminaModVersion = "1.4.1.1";
 	public static final String modid = "rstamina";
 	public static final Logger LOGGER = LoggerFactory.getLogger(modid);
 
@@ -65,19 +65,36 @@ public class RStaminaMod implements ModInitializer {
 			ServerState serverState = ServerState.getServerState(handler.player.getWorld().getServer());
 			RStaminaPlayerState playerState = ServerState.getPlayerState(handler.player);
 
+			if (!Objects.equals(serverState.worldVersion, rStaminaModVersion)) {
+				serverState.worldVersion = rStaminaModVersion;
+				/*serverState.players.forEach((p, s) -> {
+					s.usedEnergy = 0.0;
+				});*/
+				serverState.markDirty();
+			}
+
 			if (!playerState.edited) { //if the playerstate wasn't edited then match with config
 				if (playerState.energyGainRate != config.restingEnergyGainTick) {
 					playerState.energyGainRate = config.restingEnergyGainTick;
-					serverState.markDirty();
 				}
+				if (playerState.energyLossRate != config.energyLossRate) {
+					playerState.energyLossRate = config.energyLossRate;
+				}
+				if (playerState.totalStamina != config.totalStamina) {
+					playerState.totalStamina = config.totalStamina;
+					playerState.maxStamina = (playerState.totalStamina * (playerState.energy / 100));
+				}
+				if (playerState.staminaLossRate != config.staminaLossRate) {
+					playerState.staminaLossRate = config.staminaLossRate;
+				}
+				if (playerState.staminaGainRate != config.staminaGainRate) {
+					playerState.staminaGainRate = config.staminaGainRate;
+				}
+				serverState.markDirty();
 			}
 
 			if (playerState.staminaRegenCooldown != 0) {
 				playerState.staminaRegenCooldown = 0;
-			}
-
-			if (!Objects.equals(serverState.worldVersion, rStaminaModVersion)) {
-
 			}
 
 		});
@@ -95,11 +112,11 @@ public class RStaminaMod implements ModInitializer {
 				}
 			}
 			if (!player.isCreative() && !hasEfficiency && config.breakingBlocksUsesStamina) {
-
 				if (world.getBlockState(blockPos).isSolid()) {
-					playerState.stamina -= 2;
+					playerState.stamina -= config.blockBreakStaminaCost;
 					if (RStaminaMod.config.enableEnergySystem) {
 						playerState.energy -= 0.03;
+						playerState.usedEnergy += 0.03;
 						playerState.maxStamina = (playerState.totalStamina * (playerState.energy / 100));
 					}
 					playerState.staminaRegenCooldown = 20;
@@ -145,10 +162,11 @@ public class RStaminaMod implements ModInitializer {
 									playerstate.energy = 100.0;
 									playerstate.edited = false;
 									playerstate.staminaRegenCooldown = 0;
-									playerstate.staminaLossRate = 0.25;
-									playerstate.staminaGainRate = 0.125;
-									playerstate.energyLossRate = 0.004;
+									playerstate.staminaLossRate = config.staminaLossRate;
+									playerstate.staminaGainRate = config.staminaGainRate;
+									playerstate.energyLossRate = config.energyLossRate;
 									playerstate.energyGainRate = RStaminaMod.config.restingEnergyGainTick;
+
 									serverState.markDirty();
 
 									context.getSource().sendMessage(Text.literal("Reset " + EntityArgumentType.getPlayer(context, "player").getName().getString() + "'s stamina stats."));

@@ -28,14 +28,22 @@ public class RStaminaConfig extends Config {
     public boolean fitnessSystem = true;
     @ConfigEntry(comment = "Amount of stamina players gain or loose when the fitness system is enabled. (Default: 0.25)")
     public double fitnessStaminaChange = 0.25;
-    @ConfigEntry(comment = "Maximum stamina players can reach with the fitness system. (Default: 0.25)")
+    @ConfigEntry(comment = "Maximum stamina players can reach with the fitness system. (Default: 128.0)")
     public double fitnessStaminaLimit = 128.0;
-    @ConfigEntry(comment = "Players have to have less than this much energy to gain stamina upon sleeping. (Default: 85.0)")
-    public double fitnessEnergyToGain = 85.0;
-    @ConfigEntry(comment = "Minimum energy players have to have to lose stamina upon sleeping. (Default: 92.0)")
-    public double fitnessEnergyToLose = 92.0;
     @ConfigEntry(comment = "Enables or disables the energy system. (Default: true)")
     public boolean enableEnergySystem = true;
+    @ConfigEntry(comment = "Upon sleeping if you have used less energy than this you will loose max stamina. (Default: 8.0)")
+    public double fitnessUsedEnergyToKeep = 8.0;
+    @ConfigEntry(comment = "Upon sleeping if you have used more energy than this you will gain max stamina. (Default: 15.0)")
+    public double fitnessUsedEnergyToGain = 15.0;
+    @ConfigEntry(comment = "Amount of stamina you lose per tick while running. (Default: 0.25)")
+    public double staminaLossRate = 0.25;
+    @ConfigEntry(comment = "Amount of stamina you gain per tick while not running. (Default: 0.1875)")
+    public double staminaGainRate = 0.1875;
+    @ConfigEntry(comment = "Amount of energy you lose per tick while running (Default: 0.004)")
+    public double energyLossRate = 0.004;
+    @ConfigEntry(comment = "Amount of stamina you lose when breaking solid blocks. (Default: 2.0)")
+    public double blockBreakStaminaCost = 2.0;
 
     public RStaminaConfig() {
         super(ConfigOptions.mod(RStaminaMod.modid));

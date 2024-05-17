@@ -13,7 +13,7 @@ import java.util.UUID;
 public class ServerState extends PersistentState {
 
     int testInt = 0;
-    String worldVersion = "1.2.0";
+    public String worldVersion = RStaminaMod.rStaminaModVersion;
 
     public HashMap<UUID, RStaminaPlayerState> players = new HashMap<>();
 
@@ -29,6 +29,7 @@ public class ServerState extends PersistentState {
             playerStateNbt.putDouble("maxStamina", playerSate.maxStamina);
             playerStateNbt.putDouble("totalStamina", playerSate.totalStamina);
             playerStateNbt.putDouble("energy", playerSate.energy);
+            playerStateNbt.putDouble("usedEnergy", playerSate.usedEnergy);
             playerStateNbt.putDouble("energyFromResting", playerSate.energyFromResting);
             playerStateNbt.putBoolean("edited", playerSate.edited);
             playerStateNbt.putInt("staminaRegenCooldown", playerSate.staminaRegenCooldown);
@@ -42,6 +43,7 @@ public class ServerState extends PersistentState {
         nbt.put("players", playersNbtCompound);
 
         nbt.putInt("testInt", testInt);
+        nbt.putString("worldVersion", worldVersion);
         return nbt;
     }
 
@@ -58,6 +60,7 @@ public class ServerState extends PersistentState {
             playerState.maxStamina = playersTag.getCompound(key).getDouble("maxStamina");
             playerState.totalStamina = playersTag.getCompound(key).getDouble("totalStamina");
             playerState.energy = playersTag.getCompound(key).getDouble("energy");
+            playerState.usedEnergy = playersTag.getCompound(key).getDouble("usedEnergy");
             playerState.energyFromResting = playersTag.getCompound(key).getDouble("energyFromResting");
             playerState.edited = playersTag.getCompound(key).getBoolean("edited");
             playerState.staminaRegenCooldown = playersTag.getCompound(key).getInt("staminaRegenCooldown");
@@ -71,6 +74,7 @@ public class ServerState extends PersistentState {
         });
 
         serverState.testInt = tag.getInt("testInt");
+        serverState.worldVersion = tag.getString("worldVersion");
 
         return serverState;
     }

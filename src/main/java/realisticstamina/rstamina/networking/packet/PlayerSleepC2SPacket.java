@@ -19,25 +19,29 @@ public class PlayerSleepC2SPacket {
 
         if (RStaminaMod.config.fitnessSystem) {
 
-            double energy = (playerState.energy - playerState.energyFromResting);
+            double ue = playerState.usedEnergy;
 
-            if (energy < RStaminaMod.config.fitnessEnergyToGain) {
-                if (playerState.totalStamina < RStaminaMod.config.fitnessStaminaLimit) {
-                    playerState.totalStamina += RStaminaMod.config.fitnessStaminaChange;
-                    player.sendMessageToClient(Text.literal("§a+" + RStaminaMod.config.fitnessStaminaChange + " Total Stamina"), true);
-                }
-            } else if (energy > RStaminaMod.config.fitnessEnergyToLose && energy < 100.0) {
+            if (ue < RStaminaMod.config.fitnessUsedEnergyToKeep && ue != 0) {
                 if (playerState.totalStamina > RStaminaMod.config.totalStamina) {
                     playerState.totalStamina -= RStaminaMod.config.fitnessStaminaChange;
-                    player.sendMessageToClient(Text.literal("§c-" + RStaminaMod.config.fitnessStaminaChange + " Total Stamina"), true);
+                    player.sendMessageToClient(Text.literal("§c-" + RStaminaMod.config.fitnessStaminaChange + " Total Stamina"), false);
                     if (playerState.totalStamina < RStaminaMod.config.totalStamina) {
                         playerState.totalStamina = RStaminaMod.config.totalStamina;
+                    }
+                }
+            } else if (ue > RStaminaMod.config.fitnessUsedEnergyToGain) {
+                if (playerState.totalStamina < RStaminaMod.config.fitnessStaminaLimit) {
+                    playerState.totalStamina += RStaminaMod.config.fitnessStaminaChange;
+                    player.sendMessageToClient(Text.literal("§a+" + RStaminaMod.config.fitnessStaminaChange + " Total Stamina"), false);
+                    if (playerState.totalStamina > RStaminaMod.config.fitnessStaminaLimit) {
+                        playerState.totalStamina = RStaminaMod.config.fitnessStaminaLimit;
                     }
                 }
             }
         }
 
         playerState.energy = 100.0;
+        playerState.usedEnergy = 0.0;
         playerState.maxStamina = (playerState.totalStamina * (playerState.energy / 100));
         playerState.energyFromResting = 0.0;
         serverState.markDirty();

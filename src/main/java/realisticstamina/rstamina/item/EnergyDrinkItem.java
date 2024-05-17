@@ -50,7 +50,7 @@ public class EnergyDrinkItem extends Item {
             ServerState serverState = ServerState.getServerState(playerEntity.getWorld().getServer());
             RStaminaPlayerState playerState = ServerState.getPlayerState(playerEntity);
 
-            playerState.energy += 5.0;
+            playerState.energy += 10.0;
             if (playerState.energy > 100.0) { playerState.energy = 100.0; }
             playerState.maxStamina = (playerState.totalStamina * (playerState.energy / 100));
             serverState.markDirty();

@@ -26,7 +26,7 @@ public class StaminaHudOverlay implements HudRenderCallback {
         //RenderSystem.setShaderColor(1.0f,1.0f,1.0f,1.0f);
         //RenderSystem.setShaderTexture(0, )
 
-        if (client != null) {
+        if (client != null && RStaminaClient.showingStaminaTicks > 0) {
 
             TextRenderer textRenderer = client.textRenderer;
 

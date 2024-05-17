@@ -32,19 +32,20 @@ public class UpdateStaminaC2SPacket {
             playerstate.staminaRegenCooldown -= 1;
         }
 
-        if (player.isSprinting() || player.isSwimming()) {
+        if (player.isSprinting()) {
 
             if (!player.isCreative() && !player.isSpectator()) {
 
                 playerstate.stamina -= playerstate.staminaLossRate;
                 if (RStaminaMod.config.enableEnergySystem) {
                     playerstate.energy -= playerstate.energyLossRate;
+                    playerstate.usedEnergy += playerstate.energyLossRate;
                     playerstate.maxStamina = (playerstate.totalStamina * (playerstate.energy / 100));
                 }
                 serverState.markDirty();
             }
 
-        } else if (!player.isSprinting() && !player.isSwimming() && !player.isClimbing() && !waterLogged && playerstate.stamina < playerstate.maxStamina) {
+        } else if (!player.isSprinting() && !player.isSwimming() && !player.isClimbing() && playerstate.stamina < playerstate.maxStamina) {
 
             if (playerstate.staminaRegenCooldown <= 0) {
                 if (!player.isSneaking()) {
@@ -53,7 +54,7 @@ public class UpdateStaminaC2SPacket {
                         playerstate.stamina = playerstate.maxStamina;
                     }
                 } else if (player.isSneaking()) {
-                    playerstate.stamina += playerstate.staminaGainRate * 1.75;
+                    playerstate.stamina += 0.21875;
                     if (playerstate.stamina > playerstate.maxStamina) {
                         playerstate.stamina = playerstate.maxStamina;
                     }

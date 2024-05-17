@@ -25,6 +25,8 @@ public class RStaminaClient implements ClientModInitializer {
     public static double clientStoredEnergy = 10.0;
     public static double clientStoredTotalStamina = 112.0;
 
+    public static int showingStaminaTicks = 0;
+
     @Override
     public void onInitializeClient() {
 
@@ -40,12 +42,38 @@ public class RStaminaClient implements ClientModInitializer {
         ClientTickEvents.START_CLIENT_TICK.register((client) -> {
             if (client.world != null) {
                 if (client.world.isClient()) {
-                    ClientPlayNetworking.send(NetworkingPackets.UPDATE_STAMINA_C2S_PACKET_ID, PacketByteBufs.create());
-                    if (client.player.getVehicle() != null) {
-                        PacketByteBuf buf = PacketByteBufs.create();
-                        buf.writeString(client.player.getVehicle().getName().getString());
-                        buf.writeBoolean(client.player.isRiding());
-                        ClientPlayNetworking.send(NetworkingPackets.RIDING_C2S_PACKET_ID, buf);
+                    if (client.isInSingleplayer()) {
+                        if (!client.isPaused()) {
+
+                            if (clientStoredStamina < clientStoredMaxStamina) {
+                                showingStaminaTicks = 20;
+                            } else if (clientStoredStamina == clientStoredMaxStamina && showingStaminaTicks > 0) {
+                                showingStaminaTicks -= 1;
+                            }
+
+                            ClientPlayNetworking.send(NetworkingPackets.UPDATE_STAMINA_C2S_PACKET_ID, PacketByteBufs.create());
+                            if (client.player.getVehicle() != null) {
+                                PacketByteBuf buf = PacketByteBufs.create();
+                                buf.writeString(client.player.getVehicle().getName().getString());
+                                buf.writeBoolean(client.player.isRiding());
+                                ClientPlayNetworking.send(NetworkingPackets.RIDING_C2S_PACKET_ID, buf);
+                            }
+                        }
+                    } else {
+
+                        if (clientStoredStamina < clientStoredMaxStamina) {
+                            showingStaminaTicks = 20;
+                        } else if (clientStoredStamina == clientStoredMaxStamina && showingStaminaTicks > 0) {
+                            showingStaminaTicks -= 1;
+                        }
+
+                        ClientPlayNetworking.send(NetworkingPackets.UPDATE_STAMINA_C2S_PACKET_ID, PacketByteBufs.create());
+                        if (client.player.getVehicle() != null) {
+                            PacketByteBuf buf = PacketByteBufs.create();
+                            buf.writeString(client.player.getVehicle().getName().getString());
+                            buf.writeBoolean(client.player.isRiding());
+                            ClientPlayNetworking.send(NetworkingPackets.RIDING_C2S_PACKET_ID, buf);
+                        }
                     }
                 }
             }

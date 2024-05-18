@@ -24,17 +24,21 @@ public class PlayerSleepC2SPacket {
             if (ue < RStaminaMod.config.fitnessUsedEnergyToKeep && ue != 0) {
                 if (playerState.totalStamina > RStaminaMod.config.totalStamina) {
                     playerState.totalStamina -= RStaminaMod.config.fitnessStaminaChange;
+                    playerState.gainedStamina -= RStaminaMod.config.fitnessStaminaChange;
                     player.sendMessageToClient(Text.literal("§c-" + RStaminaMod.config.fitnessStaminaChange + " Total Stamina"), false);
                     if (playerState.totalStamina < RStaminaMod.config.totalStamina) {
                         playerState.totalStamina = RStaminaMod.config.totalStamina;
+                        playerState.gainedStamina = 0.0;
                     }
                 }
             } else if (ue > RStaminaMod.config.fitnessUsedEnergyToGain) {
                 if (playerState.totalStamina < RStaminaMod.config.fitnessStaminaLimit) {
                     playerState.totalStamina += RStaminaMod.config.fitnessStaminaChange;
+                    playerState.gainedStamina += RStaminaMod.config.fitnessStaminaChange;
                     player.sendMessageToClient(Text.literal("§a+" + RStaminaMod.config.fitnessStaminaChange + " Total Stamina"), false);
                     if (playerState.totalStamina > RStaminaMod.config.fitnessStaminaLimit) {
                         playerState.totalStamina = RStaminaMod.config.fitnessStaminaLimit;
+                        playerState.gainedStamina = RStaminaMod.config.fitnessStaminaLimit - playerState.totalStamina;
                     }
                 }
             }

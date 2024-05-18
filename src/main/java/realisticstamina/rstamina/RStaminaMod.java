@@ -81,7 +81,7 @@ public class RStaminaMod implements ModInitializer {
 					playerState.energyLossRate = config.energyLossRate;
 				}
 				if (playerState.totalStamina != config.totalStamina) {
-					playerState.totalStamina = config.totalStamina;
+					playerState.totalStamina = config.totalStamina+ playerState.gainedStamina;
 					playerState.maxStamina = (playerState.totalStamina * (playerState.energy / 100));
 				}
 				if (playerState.staminaLossRate != config.staminaLossRate) {
